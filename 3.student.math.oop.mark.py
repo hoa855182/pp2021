@@ -9,19 +9,18 @@ Students = []
 StudentID = []
 Courses = []
 CoursesID = []
-Courses_credit = []
+Credit = []
 Mark = []
-Mark_marks = []
+Mark_Student = []
 Mark_gpa = []
 
 
-dp = curses.initscr()
-curses.start_color()
+
 
 #--------------------------code for manage student----------------------#
 class Student:
     @staticmethod
-    def input_number_student():
+    def numberofstudent():
         dp.addstr("Enter number of student: ")
         dp.refresh()
         Nofs = int(dp.getstr().decode())
@@ -46,7 +45,7 @@ class Student:
     def s_dob(self):
         return self.dob
 
-    def inputstudent():
+    def addstudent():
         dp.addstr("Enter StudentID:")
         dp.refresh()
         id = dp.getstr().decode()
@@ -60,12 +59,12 @@ class Student:
         dob = dp.getstr().decode()
         Student(id, name, dob)
 
-    def ShowStudent():
+    def ListStudent():
         dp.addstr("Show lists of student:\n")
         dp.refresh()
-        for student in Students:
+        for s in Students:
             dp.addstr("Student id:  [%s],    Student Name:  [%s],     DOB: [%s] \n" % (
-            student.s_id(), student.s_name(), student.s_dob()))
+            s.s_id(), s.s_name(), s.s_dob()))
             dp.refresh()
 
 # -------------------------------------code for manage Course----------------------------------------#
@@ -73,7 +72,7 @@ class Student:
 class Course:
 
     @staticmethod
-    def input_number_course():
+    def numberofcourse():
         dp.refresh()
         Nofc= int(dp.getstr().decode())
         if Nofc >= 0:
@@ -88,7 +87,7 @@ class Course:
         self.credit = credit
         Courses.append(self)
         CoursesID.append(self.cid)
-        Courses_credit.append(self.credit)
+        Credit.append(self.credit)
 
     def c_id(self):
         return self.cid
@@ -100,7 +99,7 @@ class Course:
         return self.credit
 
     @staticmethod
-    def inputCourses():
+    def addCourses():
         dp.addstr("Enter CourseID:")
         dp.refresh()
         cid = dp.getstr().decode()
@@ -114,12 +113,12 @@ class Course:
         credit = float(dp.getstr().decode())
         Course(cid, name, credit)
 
-    def ShowCourses():
+    def ListCourses():
         dp.addstr("Show lists of Courses:\n")
         dp.refresh()
-        for course in Courses:
+        for c in Courses:
             dp.addstr("CourseID:  [%s],     CourseName:  [%s],     CourseCredits:  [%s] \n" % (
-            course.c_id(), course.c_name(), course.c_credit()))
+            c.c_id(), c.c_name(), c.c_credit()))
             dp.refresh()
 
 
@@ -132,7 +131,7 @@ class Marks:
         self.id = id
         self.marks = marks
         Mark.append(self)
-        Mark_marks.append(self.marks)
+        Mark_Student.append(self.marks)
 
     def c_id(self):
         return self.cid
@@ -144,7 +143,7 @@ class Marks:
         return self.marks
 
     @staticmethod
-    def inputmark():
+    def addmark():
         dp.addstr("-------------------Enter mark for course of each student--------------------\n")
         dp.addstr("- Enter the courseID: ")
         cid = (dp.getstr().decode())
@@ -162,29 +161,33 @@ class Marks:
         Marks(cid, id, marks)
 
     @staticmethod
-    def ShowMarks():
+    def ListMarks():
         dp.addstr("Show lists of mark:\n")
         dp.refresh()
-        for mark in Mark:
+        for m in Mark:
             dp.addstr("Courses id:  [%s],     Student id:  [%s]    Mark:  [%s]\n" % (
-                mark.c_id(), mark.s_id(), mark.get_marks()))
+                m.c_id(), m.s_id(), m.get_marks()))
             dp.refresh()
 class Gpa:
     def gpa():
-        value = np.array([Mark_marks])
-        cre = np.array([Courses_credit])
+        markgpa= np.array([Mark_Student])
+        credit = np.array([Credit])
         dp.addstr("Enter id of Student:")
         id = dp.getstr().decode()
         if id in StudentID:
-            for i in range(0, len(Mark)):
-                totalCredit = np.sum(cre)
-                totalValue = np.sum(np.multiply(value, cre))
+            if Courses == 1:
+                GPA = markgpa / credit
+            else:
+                for i in range(len(Courses)):
+                    totalCredit = np.sum(credit)
+                    totalValue = np.sum(np.multiply(markgpa, credit))
                 GPA = totalValue / totalCredit
         else:
             return 0
+
         Mark_gpa.append(GPA)
-        for mark in Mark:
-            dp.addstr(" [Studentid: ] %s   [Gpa: ]%s \n" % (mark.s_id(), GPA))
+        for m in Mark:
+            dp.addstr(" [Studentid: ] %s   [Gpa: ]%s \n" % (m.s_id(), GPA))
             dp.refresh()
             break
 # ------------------------------------------Show--------------------------------------#
@@ -193,7 +196,7 @@ class main:
 
 
     @staticmethod
-    def StudentManagement():
+    def StudentProgrammanagement():
         dp.addstr("-------------Welcome to my program---------------\n")
         dp.refresh()
         curses.napms(3000)
@@ -208,11 +211,11 @@ class main:
         dp.addstr(("YOU CHOSE: "))
         option=int(dp.getstr().decode())
         if option==1:
-            Nofc = Course.input_number_course()
+            Nofc = Course.numberofcourse()
             dp.clear()
             dp.refresh()
             for i in range(Nofc):
-                Course.inputCourses()
+                Course.addCourses()
                 dp.refresh()
                 dp.addstr("-------------PLEASE ADD STUDENT FOR THIS COURSE---------------\n")
                 dp.refresh()
@@ -223,17 +226,17 @@ class main:
                 dp.addstr("YOU CHOSE: ")
                 option=int(dp.getstr().decode())
                 if option==1:
-                    Nofs = Student.input_number_student()
+                    Nofs = Student.numberofstudent()
                     dp.clear()
                     dp.refresh()
                     for i in range(Nofs):
-                        Student.inputstudent()
+                        Student.addstudent()
                         dp.clear()
                         dp.refresh()
-                        Course.ShowCourses()
-                        Student.ShowStudent()
-                        Marks.inputmark()
-                        Marks.ShowMarks()
+                        Course.ListCourses()
+                        Student.ListStudent()
+                        Marks.addmark()
+                        Marks.ListMarks()
                         dp.refresh()
                         dp.addstr("1. GET GPA OF STUDENT\n")
                         dp.addstr("2. STOP!\n")
@@ -242,9 +245,13 @@ class main:
                         option=int(dp.getstr().decode())
                         if option==1:
                             Gpa.gpa()
-                            dp.addstr("DO YOU WANT TO END THE PROGRAM?")
-                            dp.addstr("1.YES!")
-                            dp.addstr("2.NO!")
+                            dp.addstr("THATS ALL!")
+                            curses.napms(4000)
+                            dp.clear()
+                            dp.addstr("DO YOU WANT TO END THE PROGRAM?\n")
+                            dp.addstr("1.YES!\n")
+                            dp.addstr("2.NO!\n")
+                            dp.addstr("YOU CHOSE: ")
                             option = int(dp.getstr().decode())
                             if option==1:
                                 dp.addstr("Good Bye!")
@@ -254,7 +261,7 @@ class main:
                                 exit()
                             else:
                                 dp.clear()
-                                main.StudentManagement()
+                                main.StudentProgrammanagement()
                                 dp.refresh()
                         else:
                             dp.addstr("Good Bye!")
@@ -277,4 +284,6 @@ class main:
 
 
 if __name__ == '__main__':
-    main.StudentManagement()
+    dp = curses.initscr()
+    curses.start_color()
+    main.StudentProgrammanagement()
