@@ -1,8 +1,12 @@
 # Student management
 
 import curses
-from intput import gpa, numberofstudent, numberofcourse, addmark, addstudent, addCourses
-from output import ListMarks, ListStudent, ListCourses
+
+from domain.Course import *
+from domain.Student import *
+from domain.getMark import *
+from intput import input
+from output import outputs
 
 Students = []
 StudentID = []
@@ -12,6 +16,7 @@ Credit = []
 Mark = []
 Mark_Student = []
 Mark_gpa = []
+
 
 
 class main:
@@ -28,14 +33,14 @@ class main:
         dp.clear()
         dp.addstr("1, Enter number of courses: \n")
         dp.addstr("2, Stop! \n")
-        dp.addstr(("YOU CHOSE: "))
+        dp.addstr(("YOU CHOSE:"))
         option=int(dp.getstr().decode())
         if option==1:
-            Nofc = numberofcourse()
+            Nofc = input.numberofcourse()
             dp.clear()
             dp.refresh()
             for i in range(Nofc):
-                addCourses()
+                input.addCourses()
                 dp.refresh()
                 dp.addstr("-------------PLEASE ADD STUDENT FOR THIS COURSE---------------\n")
                 dp.refresh()
@@ -46,16 +51,16 @@ class main:
                 dp.addstr("YOU CHOSE: ")
                 option=int(dp.getstr().decode())
                 if option==1:
-                    Nofs = numberofstudent()
+                    Nofs = input.numberofstudent()
                     dp.clear()
                     dp.refresh()
                     for i in range(Nofs):
-                        addstudent()
+                        input.addstudent()
                         dp.refresh()
-                        ListCourses()
-                        ListStudent()
-                        addmark()
-                        ListMarks()
+                        outputs.ListCourses()
+                        outputs.ListStudent()
+                        input.addmark()
+                        outputs.ListMarks()
                         dp.refresh()
                         dp.addstr("1. GET GPA OF STUDENT\n")
                         dp.addstr("2. STOP!\n")
@@ -63,7 +68,7 @@ class main:
                         dp.refresh()
                         option=int(dp.getstr().decode())
                         if option==1:
-                            gpa()
+                            input.gPa()
                             dp.addstr("THATS ALL!")
                             curses.napms(4000)
                             dp.clear()
@@ -73,7 +78,7 @@ class main:
                             dp.addstr("YOU CHOSE: ")
                             option = int(dp.getstr().decode())
                             if option==1:
-                                dp.addstr("Good Bye!")
+                                dp.addstr("------------------------------Good Bye!------------------------------")
                                 dp.refresh()
                                 curses.napms(4000)
                                 curses.endwin()

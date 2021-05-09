@@ -1,16 +1,9 @@
-import math
-import numpy as np
+
 import curses
+
 Students = []
 StudentID = []
 
-Courses = []
-CoursesID = []
-Credit = []
-
-Mark = []
-Mark_Student = []
-Mark_gpa = []
 
 dp = curses.initscr()
 curses.start_color()

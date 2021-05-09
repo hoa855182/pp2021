@@ -1,22 +1,15 @@
 import math
 import numpy as np
+import zipfile
+import os
 import curses
 
-from domain import Course, Mark, Student
-from domain.Mark import Marks
-from domain.Course import Course
-from domain.Student import Student
 
-Students = []
-StudentID = []
+from domain.getMark import *
+from domain.Course import *
+from domain.Student import *
 
 
-Courses = []
-CoursesID = []
-Credit = []
-
-Mark = []
-Mark_Student = []
 Mark_gpa = []
 
 dp = curses.initscr()
@@ -24,101 +17,132 @@ curses.start_color()
 
 
 # ------------------------------------Student--------------------------------#
-def numberofstudent():
-    dp.addstr("Enter number of student: ")
-    dp.refresh()
-    Nofs = int(dp.getstr().decode())
-    if Nofs >= 0:
-        return Nofs
-    else:
-        return 0
+class input:
+    def numberofstudent():
+        dp.addstr("Enter number of student: ")
+        dp.refresh()
+        Nofs = int(dp.getstr().decode())
+        if Nofs >= 0:
+            return Nofs
+        else:
+            return 0
 
+    def addstudent():
+        dp.addstr("Enter StudentID:")
+        dp.refresh()
+        id = dp.getstr().decode()
 
-def addstudent():
-    dp.addstr("Enter StudentID:")
-    dp.refresh()
-    id = dp.getstr().decode()
+        dp.addstr("Enter StudentName:")
+        dp.refresh()
+        name = dp.getstr().decode()
 
-    dp.addstr("Enter StudentName:")
-    dp.refresh()
-    name = dp.getstr().decode()
-
-    dp.addstr("Enter date of brith:")
-    dp.refresh()
-    dob = dp.getstr().decode()
-    StudentID.append(id)
-    Student(id, name, dob)
+        dp.addstr("Enter date of brith:")
+        dp.refresh()
+        dob = dp.getstr().decode()
+        Student(id, name, dob)
 
 
 # --------------------------------------Course------------------------------#
 
-def numberofcourse():
-    dp.refresh()
-    Nofc = int(dp.getstr().decode())
-    if Nofc >= 0:
-        return Nofc
-    else:
-        return 0
+    def numberofcourse():
+        dp.refresh()
+        Nofc = int(dp.getstr().decode())
+        if Nofc >= 0:
+            return Nofc
+        else:
+            return 0
 
+    def addCourses():
+        dp.addstr("Enter CourseID:")
+        dp.refresh()
+        cid = dp.getstr().decode()
 
-def addCourses():
-    dp.addstr("Enter CourseID:")
-    dp.refresh()
-    cid = dp.getstr().decode()
+        dp.addstr("Enter CourseName:")
+        dp.refresh()
+        name = dp.getstr().decode()
 
-    dp.addstr("Enter CourseName:")
-    dp.refresh()
-    name = dp.getstr().decode()
-
-    dp.addstr("Enter CourseCredit:")
-    dp.refresh()
-    credit = float(dp.getstr().decode())
-    CoursesID.append(cid)
-    Course(cid, name, credit)
+        dp.addstr("Enter CourseCredit:")
+        dp.refresh()
+        credit = float(dp.getstr().decode())
+        Course(cid, name, credit)
 
 
 # -------------------------------------Mark---------------------------------#
 
-def addmark():
-    dp.addstr("-------------------Enter mark for course of each student--------------------\n")
-    dp.addstr("- Enter the courseID: ")
-    cid = (dp.getstr().decode())
-    if cid in CoursesID:
-        dp.addstr("- Enter the StudentID: ")
-        id = dp.getstr().decode()
-        if id in StudentID:
-            dp.addstr("-Enter mark: ")
-            marks = math.floor(float(dp.getstr().decode()))
+    def addmark():
+        dp.addstr("-------------------Enter mark for course of each student--------------------\n")
+        dp.addstr("- Enter the courseID: ")
+        cid = (dp.getstr().decode())
+        if cid in CoursesID:
+            dp.addstr("- Enter the StudentID: ")
+            id = dp.getstr().decode()
+            if id in StudentID:
+                dp.addstr("- Enter mark: ")
+                marks = math.floor(float(dp.getstr().decode()))
+            else:
+                exit()
         else:
             exit()
-    else:
-        exit()
-    Mark_Student.append(marks)
-
-    Marks(cid, id, marks)
+        Mark_Student.append(marks)
+        Marks(cid, id, marks)
 
 
 # -------------------------------------GPA----------------------------------#
 
-def gpa():
-    GPA=0
-    markgpa = np.array([Mark_Student])
-    credit = np.array([Credit])
-    dp.addstr("Enter id of Student:")
-    id = dp.getstr().decode()
-    if id in StudentID:
-        if Courses == 1:
-            GPA = markgpa / credit
+    def gPa():
+        markgpa = np.array([Mark_Student])
+        credit = np.array([Credit])
+        dp.addstr("Enter id of Student:")
+        id = dp.getstr().decode()
+        if id in StudentID:
+            if Courses == 1:
+                gpa = markgpa / credit
+            else:
+                for i in range(len(Courses)):
+                    totalCredit = np.sum(credit)
+                    totalValue = np.sum(np.multiply(markgpa, credit))
+                gpa = totalValue / totalCredit
         else:
-            for i in range(len(Courses)):
-                totalCredit = np.sum(credit)
-                totalValue = np.sum(np.multiply(markgpa, credit))
-                GPA = totalValue / totalCredit
-    else:
-        return 0
+            return 0
 
-    Mark_gpa.append(GPA)
-    for m in Mark:
-        dp.addstr(" [Studentid: ] %s   [Gpa: ]%s \n" % (m.s_id(), GPA))
+        Mark_gpa.append(gpa)
+        for m in Mark:
+            dp.addstr(" [Studentid: ] %s   [Gpa: ]%s \n" % (m.s_id(), gpa))
+            dp.refresh()
+            break
+#------------------------------------FILELIST--------------------------------#
+    def file_list():
+        dp.addstr("WHAT YOU WANT TO DO NEXT?\n")
+        dp.addstr("1.CREATE DAT FILE\n")
+        dp.addstr("2.EXTRACT THE PROGRAM!\n")
+        dp.addstr("YOU CHOSE: ")
         dp.refresh()
-        break
+        option = int(dp.getstr().decode())
+        if option == 1:
+            filelist = ['students.txt', 'courses.txt', 'marks.txt']
+            with zipfile.ZipFile('student.dat', 'w') as new_zip:
+                for file_name in filelist:
+                    new_zip.write(file_name)
+                for file_name in filelist:
+                    os.remove(file_name)
+        if option == 2:
+            if os.path.isfile('student.dat'):
+                dp.addstr("file exist\n")
+                zip_file = zipfile.ZipFile('student.dat', 'r')
+                dp.addstr("Extracting all the files now...\n")
+                zip_file.extractall()
+                if os.path.isfile('students.txt'):
+                    fs = open('students.txt', 'r')
+                    fs.read().splitlines()
+                if os.path.isfile('courses.txt'):
+                    fc = open('courses.txt', 'r')
+                    fc.read().splitlines()
+                if os.path.isfile('marks.txt'):
+                    mf = open('marks.txt', 'r')
+                    mf.read().splitlines()
+        else:
+            dp.addstr("Good Bye!")
+            dp.refresh()
+            curses.napms(4000)
+            curses.endwin()
+            exit()

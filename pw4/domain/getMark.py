@@ -1,12 +1,6 @@
-import math
-import numpy as np
-import curses
-Students = []
-StudentID = []
 
-Courses = []
-CoursesID = []
-Credit = []
+import curses
+
 
 Mark = []
 Mark_Student = []
@@ -17,10 +11,11 @@ curses.start_color()
 
 
 class Marks:
-    def __init__(self, cid, id, marks, ):
+    def __init__(self, cid, id, marks,gpa=0):
         self.cid = cid
         self.id = id
         self.marks = marks
+        self.gpa=gpa
         Mark.append(self)
         Mark_Student.append(self.marks)
 
@@ -32,3 +27,8 @@ class Marks:
 
     def get_marks(self):
         return self.marks
+
+    def get_gpa(self):
+        return self.gpa
+    def set_gpa(self,gpa):
+        self.gpa = gpa
