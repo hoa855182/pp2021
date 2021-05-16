@@ -6,9 +6,8 @@ import curses
 from domain.Course import *
 from domain.Student import *
 from domain.getMark import *
-from intput import input
+from intput import input,Gpa,Filelist
 from output import outputs
-
 Students = []
 StudentID = []
 Courses = []
@@ -36,8 +35,8 @@ class main:
         dp.addstr("1, Enter number of courses: \n")
         dp.addstr("2, Stop! \n")
         dp.addstr(("YOU CHOSE:"))
-        option=int(dp.getstr().decode())
-        if option==1:
+        option = int(dp.getstr().decode())
+        if option == 1:
             Nofc = input.numberofcourse()
             dp.clear()
             dp.refresh()
@@ -51,64 +50,68 @@ class main:
                 dp.addstr("1. INPUT STUDENT\n")
                 dp.addstr("2. STOP!\n")
                 dp.addstr("YOU CHOSE: ")
-                option=int(dp.getstr().decode())
-                if option==1:
+                option = int(dp.getstr().decode())
+                if option == 1:
                     Nofs = input.numberofstudent()
                     dp.clear()
                     dp.refresh()
                     for i in range(Nofs):
                         input.addstudent()
                         dp.refresh()
-                        outputs.ListCourses()
-                        outputs.ListStudent()
                         input.addmark()
-                        outputs.ListMarks()
                         dp.refresh()
-                        dp.addstr("1. GET GPA OF STUDENT\n")
-                        dp.addstr("2. STOP!\n")
-                        dp.addstr("YOU CHOSE: ")
-                        dp.refresh()
-                        option=int(dp.getstr().decode())
-                        if option==1:
-                            input.gPa()
-                            curses.napms(3000)
-                            dp.clear()
-                            dp.addstr("--------------------------THATS ALL!-----------------------\n")
-                            input.file_list()
-                            dp.addstr("DO YOU WANT TO END THE PROGRAM?\n")
-                            dp.addstr("1.YES!\n")
-                            dp.addstr("2.NO!\n")
-                            dp.addstr("YOU CHOSE: ")
-                            option = int(dp.getstr().decode())
-                            if option == 1:
-                                dp.addstr("------------------------------Good Bye!------------------------------")
-                                dp.refresh()
-                                curses.napms(4000)
-                                curses.endwin()
-                                exit()
-                            else:
-                                dp.clear()
-                                main.StudentProgrammanagement()
-                                dp.refresh()
-                        else:
-                            dp.addstr("Good Bye!")
-                            dp.refresh()
-                            curses.napms(4000)
-                            curses.endwin()
-                            exit()
                 else:
-                    dp.addstr("Good Bye!")
+                    dp.addstr("-------------------------------Good Bye!---------------------------")
                     dp.refresh()
                     curses.napms(4000)
                     curses.endwin()
                     exit()
+                break
         else:
-            dp.addstr("Good Bye!")
+            dp.addstr("-------------------------------Good Bye!------------------------------------")
             dp.refresh()
             curses.napms(4000)
             curses.endwin()
+            dp.refresh()
             exit()
-
+        while True:
+            dp.addstr("1. Show Student :\n")
+            dp.addstr("2. Show Courses :\n")
+            dp.addstr("3. Show Marks :\n")
+            dp.addstr("4. Calculate and Show GPA:\n")
+            dp.addstr("5. Create dat file \n")
+            dp.addstr("6. Extract dat file \n")
+            dp.addstr("7. Stop\n")
+            dp.addstr("You choose:  ")
+            option1 = int(dp.getstr().decode())
+            dp.refresh()
+            dp.clear()
+            dp.refresh()
+            if option1 == 1:
+                outputs.ListStudent()
+                dp.refresh()
+            if option1 == 2:
+                outputs.ListCourses()
+                dp.refresh()
+            if option1 == 3:
+                outputs.ListMarks()
+                dp.refresh()
+            if option1 == 4:
+                Gpa.gPa()
+                curses.napms(3000)
+                dp.clear()
+            if option1 == 5:
+                Filelist.Createdatfile()
+                dp.refresh()
+            if option1 == 6:
+                Filelist.Extracfile()
+                dp.refresh()
+            elif option1 == 7:
+                dp.addstr("-------------------------------Good Bye!---------------------------")
+                dp.refresh()
+                curses.napms(4000)
+                curses.endwin()
+                exit()
 
 
 if __name__ == '__main__':

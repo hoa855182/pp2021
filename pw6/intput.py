@@ -1,5 +1,8 @@
 import math
 import numpy as np
+import zipfile
+import os
+import pickle
 import curses
 
 
@@ -18,6 +21,7 @@ curses.start_color()
 class input:
     def numberofstudent():
         dp.addstr("Enter number of student: ")
+        dp.refresh()
         Nofs = int(dp.getstr().decode())
         if Nofs >= 0:
             return Nofs
@@ -83,6 +87,7 @@ class input:
         Mark_Student.append(marks)
         Marks(cid, id, marks)
 
+
 # -------------------------------------GPA----------------------------------#
 class Gpa:
     def gPa():
@@ -91,14 +96,19 @@ class Gpa:
         dp.addstr("Enter id of Student:")
         id = dp.getstr().decode()
         if id in StudentID:
-            for i in range(0, len(Mark)):
-                totalCredit = np.sum(credit)
-                totalValue = np.sum(np.multiply(markgpa, credit))
+            if Courses == 1:
+                gpa = markgpa / credit
+            else:
+                for i in range(len(Courses)):
+                    totalCredit = np.sum(credit)
+                    totalValue = np.sum(np.multiply(markgpa, credit))
                 gpa = totalValue / totalCredit
         else:
             return 0
+
         Mark_gpa.append(gpa)
         for m in Mark:
-            dp.addstr("Studentid:  [%s]   Gpa: [%s] \n" % (m.s_id(), gpa))
+            dp.addstr(" [Studentid: ] %s   [Gpa: ]%s \n" % (m.s_id(), gpa))
             dp.refresh()
             break
+

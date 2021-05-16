@@ -1,5 +1,6 @@
-# Student management
 
+import pickle
+import os
 import curses
 
 from domain.Course import *
@@ -20,6 +21,7 @@ Mark_gpa = []
 
 
 class main:
+
     @staticmethod
     def StudentProgrammanagement():
         dp.addstr("-------------Welcome to my program---------------\n")
@@ -34,8 +36,8 @@ class main:
         dp.addstr("1, Enter number of courses: \n")
         dp.addstr("2, Stop! \n")
         dp.addstr(("YOU CHOSE:"))
-        option=int(dp.getstr().decode())
-        if option==1:
+        option = int(dp.getstr().decode())
+        if option == 1:
             Nofc = input.numberofcourse()
             dp.clear()
             dp.refresh()
@@ -49,8 +51,8 @@ class main:
                 dp.addstr("1. INPUT STUDENT\n")
                 dp.addstr("2. STOP!\n")
                 dp.addstr("YOU CHOSE: ")
-                option=int(dp.getstr().decode())
-                if option==1:
+                option = int(dp.getstr().decode())
+                if option == 1:
                     Nofs = input.numberofstudent()
                     dp.clear()
                     dp.refresh()
@@ -71,13 +73,15 @@ class main:
             dp.refresh()
             curses.napms(4000)
             curses.endwin()
+            dp.refresh()
             exit()
         while True:
             dp.addstr("1. Show Student :\n")
             dp.addstr("2. Show Courses :\n")
             dp.addstr("3. Show Marks :\n")
             dp.addstr("4. Calculate and Show GPA:\n")
-            dp.addstr("5. Stop\n")
+            dp.addstr("5. Save file with pickle \n")
+            dp.addstr("6. Stop\n")
             dp.addstr("You choose:  ")
             option1 = int(dp.getstr().decode())
             dp.refresh()
@@ -96,12 +100,23 @@ class main:
                 Gpa.gPa()
                 curses.napms(3000)
                 dp.clear()
-            elif option1 == 5:
+            if option1 == 5:
+                if os.path.isfile('student.dat'):
+                    with open('student.dat', 'w') as zipF:
+                        for STUDENT in Students:
+                            pickle.dump(STUDENT, zipF)
+                        for COURSE in Courses:
+                            pickle.dump(COURSE, zipF)
+                        for MARK in Mark:
+                            pickle.dump(MARK, zipF)
+                        dp.refresh()
+            elif option1 == 6:
                 dp.addstr("-------------------------------Good Bye!---------------------------")
                 dp.refresh()
                 curses.napms(4000)
                 curses.endwin()
                 exit()
+
 
 
 if __name__ == '__main__':
